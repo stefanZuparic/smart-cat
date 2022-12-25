@@ -8,12 +8,24 @@ using System.Threading.Tasks;
 
 namespace etl.Services
 {
-    internal class KpisService
+    internal class KpiService
     {
-        KpiRepository kpisRepository = new KpiRepository();
+        KpiRepository kpiRepository = new KpiRepository();
+
         BreakService breakService = new BreakService();
         ShiftService shiftService = new ShiftService();
         AllowanceService allowanceService = new AllowanceService();
+        AwardService awardService = new AwardService();
+
+        public void CalculateKpis()
+        {
+            TotalNumberOfPaidBreaks();
+            MinShiftLengthInHours();
+            MeanShiftCost();
+            MeanBreakLengthInMinutes();
+            MaxBreakFreeShiftPeriodInDays();
+            MaxAllowanceCost14d();
+        }
 
         public void TotalNumberOfPaidBreaks()
         {
@@ -42,7 +54,7 @@ namespace etl.Services
 
         public void MaxAllowanceCost14d()
         {
-            Save("max_allowance_cost_14d", allowanceService.MaxAllowanceCost14d());
+            Save("max_allowance_cost_14d", allowanceService.MaxAllowanceCost14Days());
         }
 
 
@@ -50,7 +62,9 @@ namespace etl.Services
         {
             DateOnly date = DateOnly.FromDateTime(DateTime.Now);
 
-            if (kpisRepository.GetSpecificKpi(name, date) == null)
+            Kpi? existing = kpiRepository.GetKpiByNameAndDate(name, date);
+
+            if (existing == null)
             {
                 Kpi kpi = new Kpi()
                 {
@@ -59,9 +73,13 @@ namespace etl.Services
                     KpiValue = value
                 };
 
-                kpisRepository.Save(kpi);
+                kpiRepository.Insert(kpi);
             }
-            
+            else 
+            {
+                existing.KpiValue = value;
+                kpiRepository.Update(existing);
+            }
         }
 
     }

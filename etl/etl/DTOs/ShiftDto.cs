@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace etl.DTOs
 {
-    internal class ShiftDto
+    internal class ShiftDTO
     {
         public Guid ShiftId { get; set; }
 
@@ -18,11 +18,11 @@ namespace etl.DTOs
 
         public decimal? ShiftCost { get; set; }
 
-        public List<BreakDto> breakDtos { get; set; }
+        public List<BreakDTO> breakDTOs { get; set; }
 
-        public List<AllowanceDto> allowanceDtos { get; set; }
+        public List<AllowanceDTO> allowanceDTOs { get; set; }
 
-        public List<AwardDto> awardDtos { get; set; }
+        public List<AwardDTO> awardDTOs { get; set; }
 
     }
 }

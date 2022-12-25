@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace etl.DTOs
 {
-    internal class AllowanceDto
+    internal class AllowanceDTO
     {
         public Guid AllowanceId { get; set; }
 

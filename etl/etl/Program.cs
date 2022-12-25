@@ -1,26 +1,27 @@
-﻿// See https://aka.ms/new-console-template for more information
-using etl.DTOs;
+﻿using etl.DTOs;
 using etl.Helpers;
 using etl.Services;
 
 ApiHelper.InitialazeApi();
 
 ShiftService shiftsService = new ShiftService();
-KpisService kpisService = new KpisService();
+KpiService kpisService = new KpiService();
 BreakService breakService = new BreakService();
 AllowanceService allowanceService = new AllowanceService();
 
-List<ShiftDto> shifts = new List<ShiftDto>();
+List<ShiftDTO> shifts = new List<ShiftDTO>();
 
-shifts = await shiftsService.LoadShift();
+try
+{
+    shifts = await shiftsService.LoadShifts();
 
-shiftsService.Save(shifts);
+    shiftsService.Save(shifts);
+}
+catch(Exception e)
+{
+    Console.WriteLine("Shifts API is not available. Error message - " + e.Message);
+}
 
-kpisService.TotalNumberOfPaidBreaks();
-kpisService.MinShiftLengthInHours();
-kpisService.MeanShiftCost();
-kpisService.MeanBreakLengthInMinutes();
-kpisService.MaxBreakFreeShiftPeriodInDays();
-kpisService.MaxAllowanceCost14d();
+kpisService.CalculateKpis();
 
-Console.WriteLine("Console app done tosks!");
+Console.WriteLine("All tasks done!");

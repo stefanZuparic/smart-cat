@@ -16,15 +16,23 @@ namespace etl.Repositores
             return dbContext.Kpis.ToList();
         }
 
-        public void Save(Kpi kpi)
+        public void Insert(Kpi kpi)
         {
             dbContext.Kpis.Add(kpi);
             dbContext.SaveChanges();
         }
 
-        public Kpi GetSpecificKpi(string name, DateOnly date)
+        public void Update(Kpi kpi)
         {
-            return dbContext.Kpis.Where(k => k.KpiName == name && k.KpiDate == date).FirstOrDefault();
+            dbContext.Kpis.Update(kpi);
+            dbContext.SaveChanges();
+        }
+
+
+        public Kpi? GetKpiByNameAndDate(string name, DateOnly date)
+        {
+            return dbContext.Kpis.Where(k => k.KpiName == name && k.KpiDate == date)
+                                 .FirstOrDefault();
         }
     }
 }

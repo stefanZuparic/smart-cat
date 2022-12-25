@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace etl.DTOs
 {
-    internal class BreakDto
+    internal class BreakDTO
     {
         public Guid BreakId { get; set; }
 

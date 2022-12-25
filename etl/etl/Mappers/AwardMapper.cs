@@ -10,14 +10,14 @@ namespace etl.Mappers
 {
     internal class AwardMapper
     {
-        public static AwardInterpretation MapDtoToModel(AwardDto awardDto, ShiftDto shiftDto)
+        public static AwardInterpretation MapDTOToModel(AwardDTO awardDTO, ShiftDTO shiftDTO)
         {
             AwardInterpretation award = new AwardInterpretation() { 
-                AwardId = awardDto.AwardId,
-                AwardCost = awardDto.AwardCost,
-                AwardDate = awardDto.AwardDate,
-                AwardUnits = awardDto.AwardUnits,
-                ShiftId = shiftDto.ShiftId
+                AwardId = awardDTO.AwardId,
+                AwardCost = awardDTO.AwardCost,
+                AwardDate = awardDTO.AwardDate,
+                AwardUnits = awardDTO.AwardUnits,
+                ShiftId = shiftDTO.ShiftId
             };
 
             return award;

@@ -15,21 +15,21 @@ namespace etl.Services
     {
         BreakRepository breakRepository = new BreakRepository();
 
-        public void Save(BreakDto breakDto, ShiftDto shiftDto)
+        public void Save(BreakDTO breakDTO, ShiftDTO shiftDTO)
         {
-            Break br = BreakMapper.MapDtoToModel(breakDto, shiftDto);
+            Break br = BreakMapper.MapDTOToModel(breakDTO, shiftDTO);
 
-            if (breakRepository.Get(breakDto.BreakId) == null)
-                breakRepository.Inser(br);
+            if (breakRepository.Get(breakDTO.BreakId) == null)
+                breakRepository.Insert(br);
         }
 
-        public List<BreakDto> ConvertJsonToBreakDto(JToken shift)
+        public List<BreakDTO> ConvertJsonToBreakDTO(JToken shift)
         {
-            List<BreakDto> breaks = new List<BreakDto>(); 
+            List<BreakDTO> breaks = new List<BreakDTO>(); 
 
             foreach (var br in shift["breaks"])
             {
-                BreakDto breakDto = new BreakDto()
+                BreakDTO breakDTO = new BreakDTO()
                 {
                     BreakId = (Guid)br["id"],
                     BreakStart = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(br["start"].ToString())).DateTime,
@@ -37,7 +37,7 @@ namespace etl.Services
                     IsPaid = (bool)br["paid"]
                 };
 
-                breaks.Add(breakDto);
+                breaks.Add(breakDTO);
             }
 
             return breaks;
@@ -45,7 +45,9 @@ namespace etl.Services
 
         public int TotalNumberOfPaidBreaks()
         {
-            List<Break> paidBreaks = breakRepository.GetAll().Where(br => br.IsPaid == true).ToList();
+            List<Break> paidBreaks = breakRepository.GetAll()
+                                                    .Where(br => br.IsPaid == true)
+                                                    .ToList();
 
             return paidBreaks.Count;
         }
@@ -53,14 +55,19 @@ namespace etl.Services
         public decimal MeanBreakLengthInMinutes()
         {
             List<Break> breaks = breakRepository.GetAll();
-            decimal minits = 0;
+            decimal minutes = 0;
 
-            foreach (Break br in breaks)
+            if (breaks.Count > 0)
             {
-                minits += (decimal)(br.BreakFinish - br.BreakStart).TotalMinutes;
+                foreach (Break br in breaks)
+                {
+                    minutes += (decimal)(br.BreakFinish - br.BreakStart).TotalMinutes;
+                }
+
+                return (decimal)(minutes / breaks.Count());
             }
 
-            return (decimal)(minits / breaks.Count());
+            return 0;
         }
     }
 }

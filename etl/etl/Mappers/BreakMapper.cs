@@ -10,14 +10,14 @@ namespace etl.Mappers
 {
     internal class BreakMapper
     {
-        public static Break MapDtoToModel(BreakDto breakDto, ShiftDto shiftDto)
+        public static Break MapDTOToModel(BreakDTO breakDTO, ShiftDTO shiftDTO)
         {
             Break ret = new Break() {
-                BreakId = breakDto.BreakId,
-                BreakStart = breakDto.BreakStart,
-                BreakFinish = breakDto.BreakFinish,
-                IsPaid = breakDto.IsPaid,
-                ShiftId = shiftDto.ShiftId,
+                BreakId = breakDTO.BreakId,
+                BreakStart = breakDTO.BreakStart,
+                BreakFinish = breakDTO.BreakFinish,
+                IsPaid = breakDTO.IsPaid,
+                ShiftId = shiftDTO.ShiftId,
             };
 
             return ret;

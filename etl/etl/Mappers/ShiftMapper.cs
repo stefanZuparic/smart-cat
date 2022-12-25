@@ -10,14 +10,14 @@ namespace etl.Mappers
 {
     internal class ShiftMapper
     {
-        public static Shift MapDtoToModel(ShiftDto shiftDto) 
+        public static Shift MapDTOToModel(ShiftDTO shiftDTO) 
         {
             Shift shift = new Shift() { 
-                ShiftId = shiftDto.ShiftId,
-                ShiftDate = shiftDto.ShiftDate,
-                ShiftFinish = shiftDto.ShiftFinish,
-                ShiftStart = shiftDto.ShiftStart,
-                ShiftCost = shiftDto.ShiftCost,
+                ShiftId = shiftDTO.ShiftId,
+                ShiftDate = shiftDTO.ShiftDate,
+                ShiftFinish = shiftDTO.ShiftFinish,
+                ShiftStart = shiftDTO.ShiftStart,
+                ShiftCost = shiftDTO.ShiftCost,
             };
 
             return shift;

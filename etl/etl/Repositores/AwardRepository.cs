@@ -1,4 +1,5 @@
 ﻿using etl.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,14 @@ namespace etl.Repositores
     {
         PostgresContext dbContext = new PostgresContext();
 
-        public AwardInterpretation Get(Guid id)
+        public AwardInterpretation? Get(Guid id)
         {
-            return dbContext.AwardInterpretations.Find(id);
+            return dbContext.AwardInterpretations.Include(a => a.Shift)
+                                                 .Where(a => a.AwardId == id)
+                                                 .FirstOrDefault();
         }
 
-        public void Inser(AwardInterpretation award)
+        public void Insert(AwardInterpretation award)
         {
             dbContext.AwardInterpretations.Add(award);
             dbContext.SaveChanges();

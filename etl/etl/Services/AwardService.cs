@@ -15,21 +15,23 @@ namespace etl.Services
     {
         AwardRepository awardRepository = new AwardRepository();
 
-        public void Save(AwardDto awardDto, ShiftDto shiftDto)
+        public void Save(AwardDTO awardDTO, ShiftDTO shiftDTO)
         {
-            AwardInterpretation award = AwardMapper.MapDtoToModel(awardDto, shiftDto);
+            AwardInterpretation award = AwardMapper.MapDTOToModel(awardDTO, shiftDTO);
 
-            if(awardRepository.Get(awardDto.AwardId) == null)
-                awardRepository.Inser(award);
+            AwardInterpretation? existing = awardRepository.Get(awardDTO.AwardId);
+
+            if (existing == null)
+                awardRepository.Insert(award);
         }
 
-        public List<AwardDto> ConvertJsonToAwardDto(JToken shift)
+        public List<AwardDTO> ConvertJsonToAwardDTO(JToken shift)
         {
-            List<AwardDto> awards = new List<AwardDto>();
+            List<AwardDTO> awards = new List<AwardDTO>();
 
             foreach (var award in shift["award_interpretations"])
             {
-                AwardDto awardDto = new AwardDto()
+                AwardDTO awardDTO = new AwardDTO()
                 {
                     AwardId = (Guid)award["id"],
                     AwardDate = DateOnly.Parse(award["date"].ToString()),
@@ -37,7 +39,7 @@ namespace etl.Services
                     AwardCost = decimal.Parse(award["cost"].ToString())
                 };
 
-                awards.Add(awardDto);
+                awards.Add(awardDTO);
             };
 
             return awards;

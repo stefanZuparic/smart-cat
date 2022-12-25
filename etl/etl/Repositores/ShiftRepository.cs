@@ -21,9 +21,13 @@ namespace etl.Repositores
                                    .ToList();
         }
 
-        public Shift Get(Guid id)
+        public Shift? Get(Guid id)
         {
-            return dbContext.Shifts.Find(id);
+            return dbContext.Shifts.Include(s => s.Breaks)
+                                   .Include(s => s.AwardInterpretations)
+                                   .Include(s => s.Allowances)
+                                   .Where(s => s.ShiftId == id)
+                                   .FirstOrDefault();
         }
 
         public void Insert(Shift shift)

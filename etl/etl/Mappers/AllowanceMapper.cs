@@ -10,13 +10,13 @@ namespace etl.Mappers
 {
     internal class AllowanceMapper
     {
-        public static Allowance MapDtoToModel(AllowanceDto allowanceDto, ShiftDto shiftDto)
+        public static Allowance MapDTOToModel(AllowanceDTO allowanceDTO, ShiftDTO shiftDTO)
         { 
             Allowance allowance = new Allowance() { 
-                AllowanceId = allowanceDto.AllowanceId,
-                AllowanceCost = allowanceDto.AllowanceCost,
-                AllowanceValue = allowanceDto.AllowanceValue,
-                ShiftId = shiftDto.ShiftId,
+                AllowanceId = allowanceDTO.AllowanceId,
+                AllowanceCost = allowanceDTO.AllowanceCost,
+                AllowanceValue = allowanceDTO.AllowanceValue,
+                ShiftId = shiftDTO.ShiftId,
             };
 
             return allowance;

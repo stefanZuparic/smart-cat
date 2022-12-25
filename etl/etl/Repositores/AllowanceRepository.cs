@@ -17,12 +17,14 @@ namespace etl.Repositores
             return dbContext.Allowances.Include(a => a.Shift).ToList();
         }
 
-        public Allowance Get(Guid id)
+        public Allowance? Get(Guid id)
         {
-            return dbContext.Allowances.Find(id);
+            return dbContext.Allowances.Include(a => a.Shift)
+                                       .Where(a => a.AllowanceId == id)
+                                       .FirstOrDefault();
         }
 
-        public void Inser(Allowance allowance)
+        public void Insert(Allowance allowance)
         {
             dbContext.Allowances.Add(allowance);
             dbContext.SaveChanges();

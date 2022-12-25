@@ -22,29 +22,29 @@ namespace etl.Services
         AllowanceService allowanceService = new AllowanceService();
         AwardService awardService = new AwardService();
 
-        public async Task<List<ShiftDto>> LoadShift()
+        public async Task<List<ShiftDTO>> LoadShifts()
         { 
-            List<ShiftDto> shifts = new List<ShiftDto>();
+            List<ShiftDTO> shifts = new List<ShiftDTO>();
 
             string baseUrl = "http://localhost:8000";
-            string FirstUrl = "/api/shifts?start=0&limit=30";
+            string nextUrl = "/api/shifts?start=0&limit=30";
 
-            while (FirstUrl != null) {
-                using (HttpResponseMessage response = await ApiHelper.ApiShift.GetAsync(baseUrl + FirstUrl))
+            while (nextUrl != null) {
+                using (HttpResponseMessage response = await ApiHelper.ShiftsAPI.GetAsync(baseUrl + nextUrl))
                 {
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonRawData = JObject.Parse(await response.Content.ReadAsStringAsync());
 
-                        ConvertJsonToShiftsDto(jsonRawData, ref shifts);
+                        ConvertJsonToShiftsDTO(jsonRawData, ref shifts);
 
                         try
                         {
-                            FirstUrl = jsonRawData["links"]["next"].ToString();
+                            nextUrl = jsonRawData["links"]["next"].ToString();
                         }
                         catch
                         {
-                            FirstUrl = null;
+                            nextUrl = null;
                         }
 
                     }
@@ -58,43 +58,43 @@ namespace etl.Services
             return shifts;
         }
 
-        public List<ShiftDto> ConvertJsonToShiftsDto(JObject JsonRawData, ref List<ShiftDto> shifts)
+        public List<ShiftDTO> ConvertJsonToShiftsDTO(JObject JsonRawData, ref List<ShiftDTO> shifts)
         {
 
             foreach (var shift in JsonRawData["results"]) 
             {
-                List<BreakDto> breaks = breakService.ConvertJsonToBreakDto(shift);   
-                List<AwardDto> awards = awardService.ConvertJsonToAwardDto(shift);
-                List<AllowanceDto> allowances = allowanceService.ConvertJsonToAllowanceDto(shift);
+                List<BreakDTO> breaks = breakService.ConvertJsonToBreakDTO(shift);   
+                List<AwardDTO> awards = awardService.ConvertJsonToAwardDTO(shift);
+                List<AllowanceDTO> allowances = allowanceService.ConvertJsonToAllowanceDTO(shift);
 
-                ShiftDto shiftDto = new ShiftDto()
+                ShiftDTO shiftDTO = new ShiftDTO()
                 {
                     ShiftId = (Guid)(shift["id"]),
                     ShiftDate = DateOnly.Parse(shift["date"].ToString()),
                     ShiftStart = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(shift["start"].ToString())).DateTime,
                     ShiftFinish = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(shift["finish"].ToString())).DateTime,
-                    breakDtos = breaks,
-                    allowanceDtos = allowances,
-                    awardDtos = awards,
+                    breakDTOs = breaks,
+                    allowanceDTOs = allowances,
+                    awardDTOs = awards,
                     ShiftCost = CalculateShiftCost(allowances, awards)
                 };
 
-                shifts.Add(shiftDto);
+                shifts.Add(shiftDTO);
             }
 
             return shifts;
         }
 
-        public decimal CalculateShiftCost(List<AllowanceDto> allowances, List<AwardDto> awards)
+        public decimal CalculateShiftCost(List<AllowanceDTO> allowances, List<AwardDTO> awards)
         {
             decimal shiftCost = 0;
 
-            foreach (AllowanceDto allowance in allowances)
+            foreach (AllowanceDTO allowance in allowances)
             {
                 shiftCost += allowance.AllowanceCost;
             }
 
-            foreach (AwardDto award in awards)
+            foreach (AwardDTO award in awards)
             {
                 shiftCost += award.AwardCost;
             }
@@ -102,28 +102,30 @@ namespace etl.Services
             return shiftCost;
         }
 
-        public void Save(List<ShiftDto> shiftDtos)
+        public void Save(List<ShiftDTO> shiftDTOs)
         {
-            foreach (ShiftDto shiftDto in shiftDtos) { 
+            foreach (ShiftDTO shiftDTO in shiftDTOs) { 
                 
-                Shift shift = ShiftMapper.MapDtoToModel(shiftDto);
-                
-                if(shiftsRepository.Get(shiftDto.ShiftId) == null)
+                Shift shift = ShiftMapper.MapDTOToModel(shiftDTO);
+
+                Shift? existing = shiftsRepository.Get(shiftDTO.ShiftId);
+
+                if (existing == null)
                     shiftsRepository.Insert(shift);
 
-                foreach (BreakDto breakDto in shiftDto.breakDtos)
+                foreach (BreakDTO breakDTO in shiftDTO.breakDTOs)
                 {
-                    breakService.Save(breakDto, shiftDto);
+                    breakService.Save(breakDTO, shiftDTO);
                 }
 
-                foreach (AwardDto awardDto in shiftDto.awardDtos)
+                foreach (AwardDTO awardDTO in shiftDTO.awardDTOs)
                 {
-                    awardService.Save(awardDto, shiftDto);
+                    awardService.Save(awardDTO, shiftDTO);
                 }
 
-                foreach(AllowanceDto allowanceDto in shiftDto.allowanceDtos)
+                foreach(AllowanceDTO allowanceDTO in shiftDTO.allowanceDTOs)
                 {
-                    allowanceService.Save(allowanceDto, shiftDto);
+                    allowanceService.Save(allowanceDTO, shiftDTO);
                 }
             }
         }
@@ -134,24 +136,35 @@ namespace etl.Services
 
             List<decimal> shiftLenth = new List<decimal>();
 
-            foreach (Shift shift in shifts)
+            if (shifts.Count > 0)
             {
-                shiftLenth.Add(shift.ShiftFinish.Hour - shift.ShiftStart.Hour);
+                foreach (Shift shift in shifts)
+                {
+                    shiftLenth.Add(shift.ShiftFinish.Hour - shift.ShiftStart.Hour);
+                }
+
+                return shiftLenth.Min();
             }
 
-            return shiftLenth.Min();
+            return 0;
         }
 
         public decimal MeanShiftCost()
         {
             List<Shift> shifts = shiftsRepository.GetAll();
             decimal? cost = 0;
-            foreach (Shift shift in shifts)
+
+            if (shifts.Count > 0)
             {
-                cost += shift.ShiftCost;
+                foreach (Shift shift in shifts)
+                {
+                    cost += shift.ShiftCost;
+                }
+
+                return (decimal)(cost / shifts.Count);
             }
 
-            return (decimal)(cost / shifts.Count);
+            return 0;
         }
 
         public decimal MaxBreakFreeShiftPeriodInDays()
