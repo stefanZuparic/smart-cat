@@ -11,6 +11,18 @@ namespace etl.Repositores
     {
         PostgresContext dbContext = new PostgresContext();
 
+        public AwardInterpretation Get(Guid id)
+        {
+            try
+            {
+                return dbContext.AwardInterpretations.Find(id);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public void Inser(AwardInterpretation award)
         {
             dbContext.AwardInterpretations.Add(award);

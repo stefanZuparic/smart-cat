@@ -107,7 +107,9 @@ namespace etl.Services
             foreach (ShiftDto shiftDto in shiftDtos) { 
                 
                 Shift shift = ShiftMapper.MapDtoToModel(shiftDto);
-                shiftsRepository.Inser(shift);
+                
+                if(shiftsRepository.Get(shiftDto.ShiftId) == null)
+                    shiftsRepository.Insert(shift);
 
                 foreach (BreakDto breakDto in shiftDto.breakDtos)
                 {

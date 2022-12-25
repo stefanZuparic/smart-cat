@@ -11,6 +11,18 @@ namespace etl.Repositores
     {
         PostgresContext dbContext = new PostgresContext();
 
+        public Allowance Get(Guid id)
+        {
+            try
+            {
+                return dbContext.Allowances.Find(id);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public void Inser(Allowance allowance)
         {
             dbContext.Allowances.Add(allowance);

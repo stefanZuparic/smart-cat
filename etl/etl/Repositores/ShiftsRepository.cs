@@ -12,7 +12,19 @@ namespace etl.Repositores
     {
         PostgresContext dbContext = new PostgresContext();
 
-        public void Inser(Shift shift)
+        public Shift Get(Guid id)
+        {
+            try
+            {
+                return dbContext.Shifts.Find(id);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public void Insert(Shift shift)
         {
             dbContext.Shifts.Add(shift);
             dbContext.SaveChanges();

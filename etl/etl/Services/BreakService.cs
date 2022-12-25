@@ -18,7 +18,9 @@ namespace etl.Services
         public void Save(BreakDto breakDto, ShiftDto shiftDto)
         {
             Break br = BreakMapper.MapDtoToModel(breakDto, shiftDto);
-            breakRepository.Inser(br);
+
+            if (breakRepository.Get(breakDto.BreakId) == null)
+                breakRepository.Inser(br);
         }
 
         public List<BreakDto> ConvertJsonToBreakDto(JToken shift)

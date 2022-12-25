@@ -18,7 +18,9 @@ namespace etl.Services
         public void Save(AwardDto awardDto, ShiftDto shiftDto)
         {
             AwardInterpretation award = AwardMapper.MapDtoToModel(awardDto, shiftDto);
-            awardRepository.Inser(award);
+
+            if(awardRepository.Get(awardDto.AwardId) == null)
+                awardRepository.Inser(award);
         }
 
         public List<AwardDto> ConvertJsonToAwardDto(JToken shift)

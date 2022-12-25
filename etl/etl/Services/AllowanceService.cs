@@ -17,7 +17,9 @@ namespace etl.Services
 
         public void Save(AllowanceDto allowanceDto, ShiftDto shiftDto) {
             Allowance allowance = AllowanceMapper.MapDtoToModel(allowanceDto, shiftDto);
-            allowanceRepository.Inser(allowance);
+            
+            if(allowanceRepository.Get(allowanceDto.AllowanceId) == null)
+                allowanceRepository.Inser(allowance);
         }
 
         public List<AllowanceDto> ConvertJsonToAllowanceDto(JToken shift)
