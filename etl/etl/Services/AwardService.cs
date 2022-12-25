@@ -31,17 +31,22 @@ namespace etl.Services
 
             foreach (var award in shift["award_interpretations"])
             {
-                AwardDTO awardDTO = new AwardDTO()
+                if (Guid.TryParse(award["id"].ToString(), out Guid id) &&
+                    DateOnly.TryParse(award["date"].ToString(), out DateOnly date) &&
+                    double.TryParse(award["units"].ToString(), out double units) &&
+                    decimal.TryParse(award["cost"].ToString(), out decimal cost)
+                    )
                 {
-                    AwardId = (Guid)award["id"],
-                    AwardDate = DateOnly.Parse(award["date"].ToString()),
-                    AwardUnits = double.Parse(award["units"].ToString()),
-                    AwardCost = decimal.Parse(award["cost"].ToString())
-                };
-
-                awards.Add(awardDTO);
-            };
-
+                    AwardDTO awardDTO = new AwardDTO()
+                    {
+                        AwardId = id,
+                        AwardDate = date,
+                        AwardUnits = units,
+                        AwardCost = cost
+                    };
+                    awards.Add(awardDTO);
+                }
+            }
             return awards;
         }
     }

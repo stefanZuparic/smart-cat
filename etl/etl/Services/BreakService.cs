@@ -29,15 +29,22 @@ namespace etl.Services
 
             foreach (var br in shift["breaks"])
             {
-                BreakDTO breakDTO = new BreakDTO()
+                if (Guid.TryParse(br["id"].ToString(), out Guid id) &&
+                    long.TryParse(br["start"].ToString(), out long start) &&
+                    long.TryParse(br["finish"].ToString(), out  long finish) &&
+                    bool.TryParse(br["paid"].ToString(), out bool paid)
+                    ) 
                 {
-                    BreakId = (Guid)br["id"],
-                    BreakStart = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(br["start"].ToString())).DateTime,
-                    BreakFinish = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(br["finish"].ToString())).DateTime,
-                    IsPaid = (bool)br["paid"]
-                };
+                    BreakDTO breakDTO = new BreakDTO()
+                    {
+                        BreakId = id,
+                        BreakStart = DateTimeOffset.FromUnixTimeMilliseconds(start).DateTime,
+                        BreakFinish = DateTimeOffset.FromUnixTimeMilliseconds(finish).DateTime,
+                        IsPaid = paid
+                    };
 
-                breaks.Add(breakDTO);
+                    breaks.Add(breakDTO);
+                }
             }
 
             return breaks;

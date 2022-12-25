@@ -63,19 +63,26 @@ namespace etl.Services
                 List<AwardDTO> awards = awardService.ConvertJsonToAwardDTO(shift);
                 List<AllowanceDTO> allowances = allowanceService.ConvertJsonToAllowanceDTO(shift);
 
-                ShiftDTO shiftDTO = new ShiftDTO()
+                if (Guid.TryParse(shift["id"].ToString(), out Guid id) &&
+                    DateOnly.TryParse(shift["date"].ToString(), out DateOnly date) &&
+                    long.TryParse(shift["start"].ToString(), out long start) &&
+                    long.TryParse(shift["finish"].ToString(), out long finish)
+                    )
                 {
-                    ShiftId = (Guid)(shift["id"]),
-                    ShiftDate = DateOnly.Parse(shift["date"].ToString()),
-                    ShiftStart = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(shift["start"].ToString())).DateTime,
-                    ShiftFinish = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(shift["finish"].ToString())).DateTime,
-                    breakDTOs = breaks,
-                    allowanceDTOs = allowances,
-                    awardDTOs = awards,
-                    ShiftCost = CalculateShiftCost(allowances, awards)
-                };
+                    ShiftDTO shiftDTO = new ShiftDTO()
+                    {
+                        ShiftId = id,
+                        ShiftDate = date,
+                        ShiftStart = DateTimeOffset.FromUnixTimeMilliseconds(start).DateTime,
+                        ShiftFinish = DateTimeOffset.FromUnixTimeMilliseconds(finish).DateTime,
+                        breakDTOs = breaks,
+                        allowanceDTOs = allowances,
+                        awardDTOs = awards,
+                        ShiftCost = CalculateShiftCost(allowances, awards)
+                    };
 
-                shifts.Add(shiftDTO);
+                    shifts.Add(shiftDTO);
+                }
             }
 
             return shifts;
