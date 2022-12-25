@@ -2,6 +2,7 @@
 using etl.Mappers;
 using etl.Models;
 using etl.Repositores;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,26 @@ namespace etl.Services
         {
             Break br = BreakMapper.MapDtoToModel(breakDto, shiftDto);
             breakRepository.Inser(br);
+        }
+
+        public List<BreakDto> ConvertJsonToBreakDto(JToken shift)
+        {
+            List<BreakDto> breaks = new List<BreakDto>(); 
+
+            foreach (var br in shift["breaks"])
+            {
+                BreakDto breakDto = new BreakDto()
+                {
+                    BreakId = (Guid)br["id"],
+                    BreakStart = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(br["start"].ToString())).DateTime,
+                    BreakFinish = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(br["finish"].ToString())).DateTime,
+                    IsPaid = (bool)br["paid"]
+                };
+
+                breaks.Add(breakDto);
+            }
+
+            return breaks;
         }
     }
 }

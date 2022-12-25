@@ -2,6 +2,7 @@
 using etl.Mappers;
 using etl.Models;
 using etl.Repositores;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,26 @@ namespace etl.Services
         {
             AwardInterpretation award = AwardMapper.MapDtoToModel(awardDto, shiftDto);
             awardRepository.Inser(award);
+        }
+
+        public List<AwardDto> ConvertJsonToAwardDto(JToken shift)
+        {
+            List<AwardDto> awards = new List<AwardDto>();
+
+            foreach (var award in shift["award_interpretations"])
+            {
+                AwardDto awardDto = new AwardDto()
+                {
+                    AwardId = (Guid)award["id"],
+                    AwardDate = DateOnly.Parse(award["date"].ToString()),
+                    AwardUnits = double.Parse(award["units"].ToString()),
+                    AwardCost = decimal.Parse(award["cost"].ToString())
+                };
+
+                awards.Add(awardDto);
+            };
+
+            return awards;
         }
     }
 }

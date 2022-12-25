@@ -7,6 +7,7 @@ using etl.DTOs;
 using etl.Mappers;
 using etl.Models;
 using etl.Repositores;
+using Newtonsoft.Json.Linq;
 
 namespace etl.Services
 {
@@ -18,5 +19,25 @@ namespace etl.Services
             Allowance allowance = AllowanceMapper.MapDtoToModel(allowanceDto, shiftDto);
             allowanceRepository.Inser(allowance);
         }
+
+        public List<AllowanceDto> ConvertJsonToAllowanceDto(JToken shift)
+        { 
+            List<AllowanceDto> allowances = new List<AllowanceDto>();
+
+            foreach (var allowance in shift["allowances"])
+            {
+                AllowanceDto allowanceDto = new AllowanceDto()
+                {
+                    AllowanceId = (Guid)allowance["id"],
+                    AllowanceValue = double.Parse(allowance["value"].ToString()),
+                    AllowanceCost = decimal.Parse(allowance["cost"].ToString())
+                };
+
+                allowances.Add(allowanceDto);
+            }
+
+            return allowances;
+        }
+
     }
 }

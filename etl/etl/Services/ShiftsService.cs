@@ -63,47 +63,9 @@ namespace etl.Services
 
             foreach (var shift in JsonRawData["results"]) 
             {
-                List<BreakDto> breaks = new List<BreakDto>();   
-                List<AwardDto> awards = new List<AwardDto>();
-                List<AllowanceDto> allowances = new List<AllowanceDto>();
-
-                foreach (var br in shift["breaks"])
-                {
-                    BreakDto breakDto = new BreakDto() 
-                    { 
-                        BreakId = (Guid)br["id"],
-                        BreakStart = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(br["start"].ToString())).DateTime,
-                        BreakFinish = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(br["finish"].ToString())).DateTime,
-                        IsPaid = (bool)br["paid"]
-                    };
-
-                    breaks.Add(breakDto);
-                }
-
-                foreach (var allowance in shift["allowances"]) 
-                {
-                    AllowanceDto allowanceDto = new AllowanceDto()
-                    {
-                        AllowanceId = (Guid)allowance["id"],
-                        AllowanceValue = double.Parse(allowance["value"].ToString()),
-                        AllowanceCost = decimal.Parse(allowance["cost"].ToString())
-                    };
-
-                    allowances.Add(allowanceDto);
-                }
-
-                foreach (var award in shift["award_interpretations"])
-                {
-                    AwardDto awardDto = new AwardDto()
-                    {
-                        AwardId = (Guid)award["id"],
-                        AwardDate  = DateOnly.Parse(award["date"].ToString()),
-                        AwardUnits = double.Parse(award["units"].ToString()),
-                        AwardCost = decimal.Parse(award["cost"].ToString())
-                    };
-
-                    awards.Add(awardDto);
-                };
+                List<BreakDto> breaks = breakService.ConvertJsonToBreakDto(shift);   
+                List<AwardDto> awards = awardService.ConvertJsonToAwardDto(shift);
+                List<AllowanceDto> allowances = allowanceService.ConvertJsonToAllowanceDto(shift);
 
                 ShiftDto shiftDto = new ShiftDto()
                 {
@@ -140,7 +102,7 @@ namespace etl.Services
             return shiftCost;
         }
 
-        public void SaveShifts(List<ShiftDto> shiftDtos)
+        public void Save(List<ShiftDto> shiftDtos)
         {
             foreach (ShiftDto shiftDto in shiftDtos) { 
                 
