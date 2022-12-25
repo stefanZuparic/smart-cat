@@ -31,14 +31,19 @@ namespace etl.Services
 
             foreach (var allowance in shift["allowances"])
             {
-                AllowanceDTO allowanceDTO = new AllowanceDTO()
+                if (Guid.TryParse(allowance["id"].ToString(),out Guid id) && 
+                    double.TryParse(allowance["value"].ToString(), out double value) && 
+                    decimal.TryParse(allowance["cost"].ToString(), out decimal cost))
                 {
-                    AllowanceId = (Guid)allowance["id"],
-                    AllowanceValue = double.Parse(allowance["value"].ToString()),
-                    AllowanceCost = decimal.Parse(allowance["cost"].ToString())
-                };
+                    AllowanceDTO allowanceDTO = new AllowanceDTO()
+                    {
+                        AllowanceId = id,
+                        AllowanceValue = value,
+                        AllowanceCost = cost
+                    };
 
-                allowances.Add(allowanceDTO);
+                    allowances.Add(allowanceDTO);
+                }
             }
 
             return allowances;

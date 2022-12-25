@@ -38,14 +38,10 @@ namespace etl.Services
 
                         ConvertJsonToShiftsDTO(jsonRawData, ref shifts);
 
-                        try
-                        {
+                        if (jsonRawData["links"]["next"] != null)
                             nextUrl = jsonRawData["links"]["next"].ToString();
-                        }
-                        catch
-                        {
+                        else
                             nextUrl = null;
-                        }
 
                     }
                     else
