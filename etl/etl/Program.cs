@@ -14,4 +14,6 @@ List<ShiftDto> shifts = new List<ShiftDto>();
 
 shifts = await shiftsService.LoadShift();
 
+shiftsService.SaveShifts(shifts);
+
 Console.ReadLine();

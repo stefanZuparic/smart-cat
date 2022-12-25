@@ -1,5 +1,8 @@
 ﻿using etl.DTOs;
 using etl.Helpers;
+using etl.Mappers;
+using etl.Models;
+using etl.Repositores;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -13,6 +16,12 @@ namespace etl.Services
 {
     internal class ShiftsService
     {
+        ShiftsRepository shiftsRepository = new ShiftsRepository();
+        
+        BreakService breakService = new BreakService();
+        AllowanceService allowanceService = new AllowanceService();
+        AwardService awardService = new AwardService();
+
         public async Task<List<ShiftDto>> LoadShift()
         { 
             List<ShiftDto> shifts = new List<ShiftDto>();
@@ -129,6 +138,30 @@ namespace etl.Services
             }
 
             return shiftCost;
+        }
+
+        public void SaveShifts(List<ShiftDto> shiftDtos)
+        {
+            foreach (ShiftDto shiftDto in shiftDtos) { 
+                
+                Shift shift = ShiftMapper.MapDtoToModel(shiftDto);
+                shiftsRepository.Inser(shift);
+
+                foreach (BreakDto breakDto in shiftDto.breakDtos)
+                {
+                    breakService.Save(breakDto, shiftDto);
+                }
+
+                foreach (AwardDto awardDto in shiftDto.awardDtos)
+                {
+                    awardService.Save(awardDto, shiftDto);
+                }
+
+                foreach(AllowanceDto allowanceDto in shiftDto.allowanceDtos)
+                {
+                    allowanceService.Save(allowanceDto, shiftDto);
+                }
+            }
         }
     }
 }
