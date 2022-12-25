@@ -3,14 +3,13 @@ using etl.DTOs;
 using etl.Helpers;
 using etl.Services;
 
-Console.WriteLine("Hello, World!");
-
-
 ApiHelper.InitialazeApi();
 
 ShiftService shiftsService = new ShiftService();
 KpisService kpisService = new KpisService();
 BreakService breakService = new BreakService();
+AllowanceService allowanceService = new AllowanceService();
+
 List<ShiftDto> shifts = new List<ShiftDto>();
 
 shifts = await shiftsService.LoadShift();
@@ -22,7 +21,6 @@ kpisService.MinShiftLengthInHours();
 kpisService.MeanShiftCost();
 kpisService.MeanBreakLengthInMinutes();
 kpisService.MaxBreakFreeShiftPeriodInDays();
+kpisService.MaxAllowanceCost14d();
 
-Console.WriteLine("Max brak:" + shiftsService.MaxBreakFreeShiftPeriodInDays());
-
-Console.ReadLine();
+Console.WriteLine("Console app done tosks!");

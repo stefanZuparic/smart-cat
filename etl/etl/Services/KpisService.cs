@@ -13,6 +13,7 @@ namespace etl.Services
         KpiRepository kpisRepository = new KpiRepository();
         BreakService breakService = new BreakService();
         ShiftService shiftService = new ShiftService();
+        AllowanceService allowanceService = new AllowanceService();
 
         public void TotalNumberOfPaidBreaks()
         {
@@ -37,6 +38,11 @@ namespace etl.Services
         public void MaxBreakFreeShiftPeriodInDays() 
         {
             Save("max_break_free_shift_period_in_days", shiftService.MaxBreakFreeShiftPeriodInDays());
+        }
+
+        public void MaxAllowanceCost14d()
+        {
+            Save("max_allowance_cost_14d", allowanceService.MaxAllowanceCost14d());
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using etl.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,11 @@ namespace etl.Repositores
     internal class AllowanceRepository
     {
         PostgresContext dbContext = new PostgresContext();
+
+        public List<Allowance> GetAll()
+        { 
+            return dbContext.Allowances.Include(a => a.Shift).ToList();
+        }
 
         public Allowance Get(Guid id)
         {

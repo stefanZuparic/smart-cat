@@ -41,5 +41,18 @@ namespace etl.Services
             return allowances;
         }
 
+        public decimal MaxAllowanceCost14d()
+        {
+            DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+
+            List<Allowance> allowancesInLast14Days = allowanceRepository.GetAll()
+                                                                        .Where(a => a.Shift.ShiftDate <= today && a.Shift.ShiftDate >= today.AddDays(-14))
+                                                                        .OrderBy(a => a.Shift.ShiftDate)
+                                                                        .ToList();
+
+            return (decimal)allowancesInLast14Days.Max(a => a.AllowanceValue);
+
+        }
+
     }
 }
