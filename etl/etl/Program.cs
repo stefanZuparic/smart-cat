@@ -14,10 +14,11 @@ List<ShiftDTO> shifts = new List<ShiftDTO>();
 try
 {
     shifts = await shiftsService.LoadShifts();
-
     shiftsService.Save(shifts);
+
+    Console.WriteLine("Task load_shifts done!");
 }
-catch(Exception e)
+catch (Exception e)
 {
     Console.WriteLine("Shifts API is not available. Error message - " + e.Message);
 }

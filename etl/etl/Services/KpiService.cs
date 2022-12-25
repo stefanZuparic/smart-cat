@@ -30,31 +30,37 @@ namespace etl.Services
         public void TotalNumberOfPaidBreaks()
         {
             Save("total_number_of_paid_breaks", breakService.TotalNumberOfPaidBreaks());
+            Console.WriteLine("Task total_number_of_paid_breaks done!");
         }
 
         public void MinShiftLengthInHours()
         {
             Save("min_shift_length_in_hours", shiftService.MinShiftLengthInHours());
+            Console.WriteLine("Task min_shift_length_in_hours done!");
         }
 
         public void MeanShiftCost()
         {
             Save("mean_shift_cost", shiftService.MeanShiftCost());
+            Console.WriteLine("Task mean_shift_cost done!");
         }
 
         public void MeanBreakLengthInMinutes()
         {
             Save("mean_break_length_in_minutes", breakService.MeanBreakLengthInMinutes());
+            Console.WriteLine("Task mean_break_length_in_minutes done!");
         }
 
         public void MaxBreakFreeShiftPeriodInDays() 
         {
             Save("max_break_free_shift_period_in_days", shiftService.MaxBreakFreeShiftPeriodInDays());
+            Console.WriteLine("Task max_break_free_shift_period_in_days done!");
         }
 
         public void MaxAllowanceCost14d()
         {
             Save("max_allowance_cost_14d", allowanceService.MaxAllowanceCost14Days());
+            Console.WriteLine("Task max_allowance_cost_14d done!");
         }
 
 
