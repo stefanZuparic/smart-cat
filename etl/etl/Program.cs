@@ -8,9 +8,9 @@ Console.WriteLine("Hello, World!");
 
 ApiHelper.InitialazeApi();
 
-ShiftsService shiftsService = new ShiftsService();
+ShiftService shiftsService = new ShiftService();
 KpisService kpisService = new KpisService();
-
+BreakService breakService = new BreakService();
 List<ShiftDto> shifts = new List<ShiftDto>();
 
 shifts = await shiftsService.LoadShift();
@@ -18,5 +18,11 @@ shifts = await shiftsService.LoadShift();
 shiftsService.Save(shifts);
 
 kpisService.TotalNumberOfPaidBreaks();
+kpisService.MinShiftLengthInHours();
+kpisService.MeanShiftCost();
+kpisService.MeanBreakLengthInMinutes();
+kpisService.MaxBreakFreeShiftPeriodInDays();
+
+Console.WriteLine("Max brak:" + shiftsService.MaxBreakFreeShiftPeriodInDays());
 
 Console.ReadLine();

@@ -1,5 +1,6 @@
 ﻿using etl.DTOs;
 using etl.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,20 +9,21 @@ using System.Threading.Tasks;
 
 namespace etl.Repositores
 {
-    internal class ShiftsRepository
+    internal class ShiftRepository
     {
         PostgresContext dbContext = new PostgresContext();
 
+        public List<Shift> GetAll()
+        {
+            return dbContext.Shifts.Include(s => s.Breaks)
+                                   .Include( s => s.AwardInterpretations)
+                                   .Include(s => s.Allowances)
+                                   .ToList();
+        }
+
         public Shift Get(Guid id)
         {
-            try
-            {
-                return dbContext.Shifts.Find(id);
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
+            return dbContext.Shifts.Find(id);
         }
 
         public void Insert(Shift shift)

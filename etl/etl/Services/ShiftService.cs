@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace etl.Services
 {
-    internal class ShiftsService
+    internal class ShiftService
     {
-        ShiftsRepository shiftsRepository = new ShiftsRepository();
+        ShiftRepository shiftsRepository = new ShiftRepository();
         
         BreakService breakService = new BreakService();
         AllowanceService allowanceService = new AllowanceService();
@@ -126,6 +126,52 @@ namespace etl.Services
                     allowanceService.Save(allowanceDto, shiftDto);
                 }
             }
+        }
+
+        public decimal MinShiftLengthInHours()
+        {
+            List<Shift> shifts = shiftsRepository.GetAll();
+
+            List<decimal> shiftLenth = new List<decimal>();
+
+            foreach (Shift shift in shifts)
+            {
+                shiftLenth.Add(shift.ShiftFinish.Hour - shift.ShiftStart.Hour);
+            }
+
+            return shiftLenth.Min();
+        }
+
+        public decimal MeanShiftCost()
+        {
+            List<Shift> shifts = shiftsRepository.GetAll();
+            decimal? cost = 0;
+            foreach (Shift shift in shifts)
+            {
+                cost += shift.ShiftCost;
+            }
+
+            return (decimal)(cost / shifts.Count);
+        }
+
+        public decimal MaxBreakFreeShiftPeriodInDays()
+        {
+            List<Shift> shifts = shiftsRepository.GetAll().OrderBy(s => s.ShiftDate).ToList();
+            decimal max = 0, count = 0;
+
+            for (int i = 0; i < shifts.Count; i++)
+            {
+                if (shifts[i].Breaks.Count == 0)
+                    count++;
+                else
+                {
+                    if (count > max)
+                        max = count;
+
+                    count = 0;
+                }
+            }
+            return max;
         }
     }
 }

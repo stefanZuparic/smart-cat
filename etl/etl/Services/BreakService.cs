@@ -49,5 +49,18 @@ namespace etl.Services
 
             return paidBreaks.Count;
         }
+
+        public decimal MeanBreakLengthInMinutes()
+        {
+            List<Break> breaks = breakRepository.GetAll();
+            decimal minits = 0;
+
+            foreach (Break br in breaks)
+            {
+                minits += (decimal)(br.BreakFinish - br.BreakStart).TotalMinutes;
+            }
+
+            return (decimal)(minits / breaks.Count());
+        }
     }
 }

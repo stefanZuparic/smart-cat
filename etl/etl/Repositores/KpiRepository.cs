@@ -24,14 +24,7 @@ namespace etl.Repositores
 
         public Kpi GetSpecificKpi(string name, DateOnly date)
         {
-            try
-            {
-                return dbContext.Kpis.Where(k => k.KpiName == name && k.KpiDate == date).FirstOrDefault();
-            }
-            catch
-            {
-                return null;
-            }
+            return dbContext.Kpis.Where(k => k.KpiName == name && k.KpiDate == date).FirstOrDefault();
         }
     }
 }

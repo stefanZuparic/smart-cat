@@ -18,14 +18,7 @@ namespace etl.Repositores
 
         public Break Get(Guid id)
         {
-            try
-            {
-                return dbContext.Breaks.Find(id);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return dbContext.Breaks.Find(id);
         }
 
         public void Inser(Break br)

@@ -13,14 +13,7 @@ namespace etl.Repositores
 
         public AwardInterpretation Get(Guid id)
         {
-            try
-            {
-                return dbContext.AwardInterpretations.Find(id);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return dbContext.AwardInterpretations.Find(id);
         }
 
         public void Inser(AwardInterpretation award)

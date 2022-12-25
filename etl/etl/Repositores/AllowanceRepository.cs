@@ -13,14 +13,7 @@ namespace etl.Repositores
 
         public Allowance Get(Guid id)
         {
-            try
-            {
-                return dbContext.Allowances.Find(id);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            return dbContext.Allowances.Find(id);
         }
 
         public void Inser(Allowance allowance)
