@@ -42,5 +42,12 @@ namespace etl.Services
 
             return breaks;
         }
+
+        public int TotalNumberOfPaidBreaks()
+        {
+            List<Break> paidBreaks = breakRepository.GetAll().Where(br => br.IsPaid == true).ToList();
+
+            return paidBreaks.Count;
+        }
     }
 }

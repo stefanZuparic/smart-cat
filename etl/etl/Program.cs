@@ -9,11 +9,14 @@ Console.WriteLine("Hello, World!");
 ApiHelper.InitialazeApi();
 
 ShiftsService shiftsService = new ShiftsService();
+KpisService kpisService = new KpisService();
 
 List<ShiftDto> shifts = new List<ShiftDto>();
 
 shifts = await shiftsService.LoadShift();
 
 shiftsService.Save(shifts);
+
+kpisService.TotalNumberOfPaidBreaks();
 
 Console.ReadLine();

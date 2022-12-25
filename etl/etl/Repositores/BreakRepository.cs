@@ -11,6 +11,11 @@ namespace etl.Repositores
     {
         PostgresContext dbContext = new PostgresContext();
 
+        public List<Break> GetAll()
+        {
+            return dbContext.Breaks.ToList();
+        }
+
         public Break Get(Guid id)
         {
             try
